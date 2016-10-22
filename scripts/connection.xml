@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<connection>
+    <driver>com.mysql.jdbc.Driver</driver>
+    <url>jdbc:mysql://localhost/home2ee?useSSL=false</url>
+    <user>agrechnev</user>
+    <password>Q1w2E3r4</password>
+</connection>
