@@ -1,6 +1,7 @@
 package agrechnev.models;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -19,10 +20,10 @@ public final class Office extends Entity  {
     private Salesrep mgr;
 
     // Links to Many
-    private Set<Salesrep> employees;
+    private Set<Salesrep> employees=new HashSet<>();
 
     //-----------------------------------------------------------------
-    // equals() and hashCode() are id-based
+    // equals() and hashCode() include proper fields only
 
     @Override
     public boolean equals(Object o) {
@@ -31,7 +32,11 @@ public final class Office extends Entity  {
 
         Office office1 = (Office) o;
 
-        return office == office1.office;
+        if (office != office1.office) return false;
+        if (city != null ? !city.equals(office1.city) : office1.city != null) return false;
+        if (region != null ? !region.equals(office1.region) : office1.region != null) return false;
+        if (target != null ? !target.equals(office1.target) : office1.target != null) return false;
+        return sales != null ? sales.equals(office1.sales) : office1.sales == null;
 
     }
 
@@ -39,6 +44,7 @@ public final class Office extends Entity  {
     public int hashCode() {
         return office;
     }
+
 
     //-----------------------------------------------------------------
     // Empty construcor, getters, setters

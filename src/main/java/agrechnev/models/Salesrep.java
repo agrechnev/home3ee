@@ -2,6 +2,7 @@ package agrechnev.models;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -23,13 +24,13 @@ public final class Salesrep extends Entity {
     private Office rep_office;
 
     // Links to Many
-    private Set<Customer> customers;
-    private Set<Office> offices;
-    private Set<Order> orders;
-    private Set<Salesrep> managerTo;
+    private Set<Customer> customers=new HashSet<>();
+    private Set<Office> offices=new HashSet<>();
+    private Set<Order> orders=new HashSet<>();
+    private Set<Salesrep> managerTo=new HashSet<>();
 
     //-----------------------------------------------------------------
-    // equals() and hashCode() are id-based
+    // equals() and hashCode() include proper fields only
 
     @Override
     public boolean equals(Object o) {
@@ -38,7 +39,13 @@ public final class Salesrep extends Entity {
 
         Salesrep salesrep = (Salesrep) o;
 
-        return empl_num == salesrep.empl_num;
+        if (empl_num != salesrep.empl_num) return false;
+        if (age != salesrep.age) return false;
+        if (name != null ? !name.equals(salesrep.name) : salesrep.name != null) return false;
+        if (title != null ? !title.equals(salesrep.title) : salesrep.title != null) return false;
+        if (hire_date != null ? !hire_date.equals(salesrep.hire_date) : salesrep.hire_date != null) return false;
+        if (quota != null ? !quota.equals(salesrep.quota) : salesrep.quota != null) return false;
+        return sales != null ? sales.equals(salesrep.sales) : salesrep.sales == null;
 
     }
 

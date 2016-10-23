@@ -36,8 +36,7 @@ public final class Order extends Entity  {
 
 
     //-----------------------------------------------------------------
-    // equals() and hashCode() are id-based
-
+    // equals() and hashCode() include proper fields only
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -45,10 +44,12 @@ public final class Order extends Entity  {
 
         Order order = (Order) o;
 
-        return order_num == order.order_num;
+        if (order_num != order.order_num) return false;
+        if (qty != order.qty) return false;
+        if (order_date != null ? !order_date.equals(order.order_date) : order.order_date != null) return false;
+        return amount != null ? amount.equals(order.amount) : order.amount == null;
 
     }
-
     @Override
     public int hashCode() {
         return order_num;

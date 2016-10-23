@@ -1,6 +1,7 @@
 package agrechnev.models;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -18,10 +19,10 @@ public final class Product extends Entity  {
     // Links to one
 
     // Links to Many
-    private Set<Order> orders;
+    private Set<Order> orders=new HashSet<>();
 
     //-----------------------------------------------------------------
-    // equals() and hashCode() are id-based
+    // equals() and hashCode() include proper fields only
 
     @Override
     public boolean equals(Object o) {
@@ -30,15 +31,18 @@ public final class Product extends Entity  {
 
         Product product = (Product) o;
 
-        if (!mfr_id.equals(product.mfr_id)) return false;
-        return product_id.equals(product.product_id);
+        if (qty_on_hand != product.qty_on_hand) return false;
+        if (mfr_id != null ? !mfr_id.equals(product.mfr_id) : product.mfr_id != null) return false;
+        if (product_id != null ? !product_id.equals(product.product_id) : product.product_id != null) return false;
+        if (description != null ? !description.equals(product.description) : product.description != null) return false;
+        return price != null ? price.equals(product.price) : product.price == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = mfr_id.hashCode();
-        result = 31 * result + product_id.hashCode();
+        int result = mfr_id != null ? mfr_id.hashCode() : 0;
+        result = 31 * result + (product_id != null ? product_id.hashCode() : 0);
         return result;
     }
 

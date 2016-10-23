@@ -16,7 +16,16 @@ import java.util.Set;
  * DAO might create entities for a linked objects if specified
  * Reads all objects only
  * Uses DSource as the SQL connection source
+ *
+ * Idea: Dao can process links actively by method convertLinks()
+ * and passively by providing methods getJoinString() and convertResults()
+ * This simple implementation can process inly 1 link and 2 entity classes:
+ * Dao which we run getAll() on (active)
+ * and one linked Dao (passive)
+ * The link can be 1 to many in any direction
+ * This ogic emulates SELECT with one LEFT JOIN
  */
+
 public abstract class AbstractDao<T extends Entity> {
     protected Class<T> tClass; // The class of T
     protected  String tablePrefix; // The table prefix for column names, like "" or "ORDERS."
@@ -31,8 +40,14 @@ public abstract class AbstractDao<T extends Entity> {
      * @param <U> The element type
      * @return The old or the new element
      */
-    private static <U> U addToSet(Set<U> set, U item){
-        // Try to find an element equal to item in the set
+    protected static <U> U addToSet(Set<U> set, U item){
+        if (!set.contains(item)) {
+            // Not in set: add the new element to the set and return it
+            set.add(item);
+            return item;
+        }
+
+        // Find an element equal to item in the set
         for (U elem : set) {
             if (elem.equals(item)) {
                 // Return existing element elem (NOT the new one item !) if found
@@ -40,9 +55,7 @@ public abstract class AbstractDao<T extends Entity> {
             }
         }
 
-        // Not found: add the new element to the set and return it
-        set.add(item);
-        return item;
+        throw new Error("Internal error in AbstractDao.addToSet()");
     }
 
 
@@ -51,11 +64,15 @@ public abstract class AbstractDao<T extends Entity> {
      * @param tClass
      * @param tablePrefix
      */
-    public AbstractDao(Class<T> tClass, String tablePrefix) {
+    protected AbstractDao(Class<T> tClass, String tablePrefix) {
         this.tClass = tClass;
         this.tablePrefix = tablePrefix;
     }
 
+
+    public Class<T> getTClass() {
+        return tClass;
+    }
 
     /**
      * Get all elements from a database table as a set
@@ -64,8 +81,16 @@ public abstract class AbstractDao<T extends Entity> {
      */
     public Set<T> getAll(AbstractDao<?> linkedDao) {
         Set<T> set = new HashSet<>(); // The set of type-T beans
-        Set<Entity> linkSet=new HashSet<>(); // The set of linked beans
+
+        // The set of linked beans
+        // Note: linkSet is not returned and not kept
+        // but we use it internally to avoid duplicates in links
+        Set<Entity> linkSet=new HashSet<>();
+
         String sqlQuery = getSqlQuery(linkedDao);
+
+        // Print the query
+        System.out.println(sqlQuery);
 
         try (Connection connection= DSource.getInstance().getConnection();
              Statement statement = connection.createStatement();
@@ -79,7 +104,7 @@ public abstract class AbstractDao<T extends Entity> {
                 // Check if the line already exists in the set (or cache), use equals by ids
                 // Add to set if a new bean
                 // The whole construct is needed if we are at the "many" side of the link, e.g.
-                // SELECT * FROM CUSTOMERS JOIN ORDERS ON CUSTOMERS.CUST_NUM=ORDERS.CUST;
+                // SELECT * FROM CUSTOMERS LEFT JOIN ORDERS ON CUSTOMERS.CUST_NUM=ORDERS.CUST;
                 // We do not want to create repeated beans, we want to add new orders
                 // to the orders (Set) field of the existing Customer bean
                 // The logic must be implemented in convertLinks()
@@ -101,7 +126,7 @@ public abstract class AbstractDao<T extends Entity> {
     }
 
     /**
-     * Create a join string e.g. "JOIN ORDERS ON CUST_NUM=CUST"
+     * Create a join string e.g. " LEFT JOIN ORDERS ON CUST_NUM=CUST"
      * when called in the Order DAO from the Customer DAO
      * @param fromClass the class of the beans of calling DAO (i.e. Customer.class in our example)
      * @return The join string

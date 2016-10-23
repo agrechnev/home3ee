@@ -68,15 +68,15 @@ public class DSource {
             readConfig();
 
             System.out.println("driver=" + DB_DRIVER);
-            System.out.println("URL=" + DB_URL);
+            System.out.println("url=" + DB_URL);
             System.out.println("user=" + DB_USER);
             System.out.println("password=" + DB_PASSWORD);
 
-            // Run the init scripts
-            System.out.println("Running init scripts ...");
-            runInitScript();
+            // Run the init script
+            System.out.println("Running the init script ...");
+//            runInitScript();
 
-        } catch (Exception e) { // Any exception
+        } catch (Exception e) { // Any exception = exit(1), I'm too lazy for details
             e.printStackTrace();
             System.exit(1);
         }
@@ -92,7 +92,7 @@ public class DSource {
      */
     private void readConfig() throws ParserConfigurationException, IOException, SAXException {
 
-        // Load the XML document
+        // Load the XML document using Java DOM parser
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document document = builder.parse(new File("scripts/connection.xml"));
