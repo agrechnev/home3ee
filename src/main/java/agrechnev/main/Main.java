@@ -1,19 +1,23 @@
 package agrechnev.main;
 
+import agrechnev.dao.AbstractDao;
 import agrechnev.dao.CustomerDao;
 import agrechnev.dao.OrderDao;
 import agrechnev.dao.SalesrepDao;
 import agrechnev.dsource.DSource;
+import agrechnev.ewriter.EWriter;
 
-import java.util.Set;
+import java.io.IOException;
+import java.nio.file.Paths;
 
 /**
  * Created by Oleksiy Grechnyev on 10/20/2016.
  */
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws DSource.DSourceException, AbstractDao.DaoException, IOException {
 
         // Pre-init the datasource, to avoid the mix-up of messages in stdout
+        // DsourceException, if any, is thrown here
         DSource.getInstance();
 
         System.out.println("-------------------------------------");
@@ -27,24 +31,14 @@ public class Main {
         SalesrepDao salesrepDao=new SalesrepDao();
 
         // Read all customers from the DB, left join orders
-        printSet(customerDao.getAll(orderDao));
+        EWriter.printSortedSet(customerDao.getAll(orderDao));
+//        EWriter.writeSortedSet(customerDao.getAll(orderDao), Paths.get("tables/cu_or.txt"));
 
         System.out.println("-------------------------------------");
 
         // Read all customers from the DB, left join salesreps
-        printSet(customerDao.getAll(salesrepDao));
-
+        EWriter.printSortedSet(customerDao.getAll(salesrepDao));
+        EWriter.writeSortedSet(customerDao.getAll(salesrepDao), Paths.get("tables/cu_sr.txt"));
     }
 
-    /**
-     * Print a set, with a "number of rows" header
-     * @param set
-     * @param <T>
-     */
-    public static <T> void printSet(Set<T> set) {
-
-        System.out.println(set.size()+" row(s)");
-        System.out.println("");
-        set.forEach(System.out::println);
-    }
 }

@@ -7,8 +7,9 @@ import java.util.Set;
 /**
  * Created by Oleksiy Grechnyev on 10/20/2016.
  * Office class -> OFFICES table
+ * Comparable by office
  */
-public final class Office extends Entity  {
+public final class Office extends Entity implements Comparable<Office> {
     // Proper fields
     private int office;
     private String city;
@@ -45,8 +46,12 @@ public final class Office extends Entity  {
         return office;
     }
 
+    @Override
+    public int compareTo(Office o) {
+        return Integer.compare(office,o.office);
+    }
 
-    //-----------------------------------------------------------------
+//-----------------------------------------------------------------
     // Empty construcor, getters, setters
 
     public Office() {

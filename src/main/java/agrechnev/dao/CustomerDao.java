@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Created by Oleksiy Grechnyev on 10/22/2016.
  * Hand-written Dao for Customer
- * This can be used as active Dao
+ * This can be used as master Dao
  */
 public class CustomerDao extends AbstractDao<Customer> {
 

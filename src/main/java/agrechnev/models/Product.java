@@ -7,8 +7,9 @@ import java.util.Set;
 /**
  * Created by Oleksiy Grechnyev on 10/20/2016.
  * Product class ->  PRODUCTS table
+ * Comparable by product_id and mfr_id
  */
-public final class Product extends Entity  {
+public final class Product extends Entity implements Comparable<Product> {
     // Proper fields
     private String mfr_id;
     private String product_id;
@@ -46,8 +47,13 @@ public final class Product extends Entity  {
         return result;
     }
 
+    @Override
+    public int compareTo(Product o) {
+        int result=product_id.compareTo(o.product_id);
 
-    //-----------------------------------------------------------------
+        return result==0 ?  mfr_id.compareTo(o.mfr_id)  : result;
+    }
+//-----------------------------------------------------------------
     // Empty construcor, getters, setters
 
     public Product() {

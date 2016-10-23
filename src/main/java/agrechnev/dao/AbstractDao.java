@@ -17,11 +17,11 @@ import java.util.Set;
  * Reads all objects only
  * Uses DSource as the SQL connection source
  *
- * Idea: Dao can process links actively by method convertLinks()
- * and passively by providing methods getJoinString() and convertResults()
+ * Idea: Dao can process links actively (master) by method convertLinks()
+ * and passively (slave) by providing methods getJoinString() and convertResults()
  * This simple implementation can process inly 1 link and 2 entity classes:
- * Dao which we run getAll() on (active)
- * and one linked Dao (passive)
+ * Dao which we run getAll() on =master
+ * and one linked Dao=slave
  * The link can be 1 to many in any direction
  * This ogic emulates SELECT with one LEFT JOIN
  */
@@ -29,6 +29,16 @@ import java.util.Set;
 public abstract class AbstractDao<T extends Entity> {
     protected Class<T> tClass; // The class of T
     protected  String tablePrefix; // The table prefix for column names, like "" or "ORDERS."
+
+    public static class DaoException extends Exception{
+        public DaoException(String message) {
+            super(message);
+        }
+
+        public DaoException(String message, Throwable cause) {
+            super(message, cause);
+        }
+    }
 
     /**
      * Search the set for an alement
@@ -79,7 +89,7 @@ public abstract class AbstractDao<T extends Entity> {
      * @param linkedDao The Dao object linked with this Dao
      * @return  set of all elements
      */
-    public Set<T> getAll(AbstractDao<?> linkedDao) {
+    public Set<T> getAll(AbstractDao<?> linkedDao) throws DaoException {
         Set<T> set = new HashSet<>(); // The set of type-T beans
 
         // The set of linked beans
@@ -116,9 +126,9 @@ public abstract class AbstractDao<T extends Entity> {
             }
 
 
-        } catch (SQLException e) {
-            e.printStackTrace();
-            // Do nothing else, we return the set as it is, propabbly empty
+        } catch (SQLException|DSource.DSourceException e) {
+            // Re-throw as DaoException
+            throw new DaoException("Exception in AbstractDao.getAll",e);
         }
 
         return set;

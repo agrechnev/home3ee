@@ -1,0 +1,21 @@
+Customer{cust_num = 2101, company = Jones Mfg., credit_limit = 65000.00, cust_rep = NULL, orders = [{112989, 2008-01-03, 6, 1458.00}]}
+Customer{cust_num = 2102, company = First Corp., credit_limit = 65000.00, cust_rep = NULL, orders = [{112968, 2007-10-12, 34, 3978.00}]}
+Customer{cust_num = 2103, company = Acme Mfg., credit_limit = 50000.00, cust_rep = NULL, orders = [{112963, 2007-12-17, 28, 3276.00}, {112983, 2007-12-27, 6, 702.00}, {112987, 2007-12-31, 11, 27500.00}, {113027, 2008-01-22, 54, 4104.00}]}
+Customer{cust_num = 2105, company = AAA Investments, credit_limit = 45000.00, cust_rep = NULL, orders = []}
+Customer{cust_num = 2106, company = Fred Lewis Corp., credit_limit = 65000.00, cust_rep = NULL, orders = [{112993, 2007-01-04, 24, 1896.00}, {113065, 2008-02-27, 6, 2130.00}]}
+Customer{cust_num = 2107, company = Ace International, credit_limit = 35000.00, cust_rep = NULL, orders = [{113034, 2008-01-29, 8, 632.00}, {113036, 2008-01-30, 9, 22500.00}]}
+Customer{cust_num = 2108, company = Holm & Landis, credit_limit = 55000.00, cust_rep = NULL, orders = [{113003, 2008-01-25, 3, 5625.00}, {113055, 2008-02-15, 6, 150.00}, {113058, 2008-02-23, 10, 1480.00}]}
+Customer{cust_num = 2109, company = Chen Associates, credit_limit = 25000.00, cust_rep = NULL, orders = [{113069, 2008-03-02, 22, 31350.00}]}
+Customer{cust_num = 2111, company = JCP Inc., credit_limit = 50000.00, cust_rep = NULL, orders = [{112975, 2007-10-12, 6, 2100.00}, {113012, 2008-01-11, 35, 3745.00}, {113057, 2008-02-18, 24, 600.00}]}
+Customer{cust_num = 2112, company = Zetacorp, credit_limit = 50000.00, cust_rep = NULL, orders = [{113007, 2008-01-08, 3, 2925.00}, {113045, 2008-02-02, 10, 45000.00}]}
+Customer{cust_num = 2113, company = Ian & Schmidt, credit_limit = 20000.00, cust_rep = NULL, orders = [{113042, 2008-02-20, 5, 22500.00}]}
+Customer{cust_num = 2114, company = Orion Corp., credit_limit = 20000.00, cust_rep = NULL, orders = [{112979, 2007-10-12, 6, 15000.00}, {113024, 2008-01-20, 20, 7100.00}]}
+Customer{cust_num = 2115, company = Smithson Corp., credit_limit = 20000.00, cust_rep = NULL, orders = []}
+Customer{cust_num = 2117, company = J.P. Sinclair, credit_limit = 35000.00, cust_rep = NULL, orders = [{112961, 2007-12-17, 7, 31500.00}]}
+Customer{cust_num = 2118, company = Midwest Systems, credit_limit = 60000.00, cust_rep = NULL, orders = [{112992, 2007-11-04, 10, 760.00}, {113013, 2008-01-14, 1, 652.00}, {113049, 2008-02-10, 2, 776.00}, {113051, 2008-02-10, 4, 1420.00}]}
+Customer{cust_num = 2119, company = Solomon Inc., credit_limit = 25000.00, cust_rep = NULL, orders = []}
+Customer{cust_num = 2120, company = Rico Enterprises, credit_limit = 50000.00, cust_rep = NULL, orders = [{113048, 2008-02-10, 2, 3750.00}]}
+Customer{cust_num = 2121, company = QMA Assoc., credit_limit = 45000.00, cust_rep = NULL, orders = []}
+Customer{cust_num = 2122, company = Three Way Lines, credit_limit = 30000.00, cust_rep = NULL, orders = []}
+Customer{cust_num = 2123, company = Carter & Sons, credit_limit = 40000.00, cust_rep = NULL, orders = []}
+Customer{cust_num = 2124, company = Peter Brothers, credit_limit = 40000.00, cust_rep = NULL, orders = [{112997, 2008-01-08, 1, 652.00}, {113062, 2008-02-24, 10, 2430.00}]}

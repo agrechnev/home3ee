@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Created by Oleksiy Grechnyev on 10/22/2016.
  * Hand-written Dao for Salesrep
- * This can be used as passive Dao
+ * This can be used as slave Dao
  */
 public class SalesrepDao extends AbstractDao<Salesrep> {
 

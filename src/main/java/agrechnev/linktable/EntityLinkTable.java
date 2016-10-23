@@ -134,7 +134,7 @@ public class EntityLinkTable {
         if (result == null || result.trim().equals(""))
             throw new EntityLinkException(String.format("getTagValue: tag <%s> not found or empty",child));
 
-        return result;
+        return result.trim();
     }
 
     private void addLink(EntityLink newLink) throws EntityLinkException {

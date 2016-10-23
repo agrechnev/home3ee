@@ -7,8 +7,9 @@ import java.util.Set;
 /**
  * Created by Oleksiy Grechnyev on 10/20/2016.
  * Customer class -> CUSTOMERS table
+ * Comparable by cust_num
  */
-public final class Customer extends Entity  {
+public final class Customer extends Entity implements Comparable<Customer>  {
     // Proper fields
     private int cust_num;
     private String company;
@@ -52,6 +53,10 @@ public final class Customer extends Entity  {
         return cust_num;
     }
 
+    @Override
+    public int compareTo(Customer o) {
+        return Integer.compare(cust_num,o.cust_num);
+    }
 
     //-----------------------------------------------------------------
     // Empty construcor, getters, setters

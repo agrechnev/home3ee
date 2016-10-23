@@ -8,8 +8,9 @@ import java.util.Set;
 /**
  * Created by Oleksiy Grechnyev on 10/20/2016.
  * Salesrep class -> SALESREPS table
+ * Comparable by empl_num
  */
-public final class Salesrep extends Entity {
+public final class Salesrep extends Entity implements Comparable<Salesrep>{
     // Proper fields
     private int empl_num;
     private String name;
@@ -54,8 +55,12 @@ public final class Salesrep extends Entity {
         return empl_num;
     }
 
+    @Override
+    public int compareTo(Salesrep o) {
+        return Integer.compare(empl_num,o.empl_num);
+    }
 
-    //-----------------------------------------------------------------
+//-----------------------------------------------------------------
     // Empty construcor, getters, setters
 
 

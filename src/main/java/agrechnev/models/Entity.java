@@ -3,15 +3,20 @@ package agrechnev.models;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by Oleksiy Grechnyev on 10/20/2016.
  * The only real reason for me to create this class was to write
  * the universal toString
  * Consider this a little funny exercise on reflections
+ *
+ * After a while I added comparable to all children (but not Entity itself) to allow for sorting
+ * This is needed for unit tests as the unsorted results depend on the SQL implementation
  */
-public abstract class Entity {
+public abstract class Entity{
 
     /**
      * Print all fields of an Entity object as a String using reflections
@@ -72,7 +77,7 @@ public abstract class Entity {
 
             // Check if it is a collection
             if (Collection.class.isAssignableFrom(field.getType())) {
-                return printCollection((Collection) value);
+                return printCollection((Collection<?>) value);
             }
 
 
@@ -86,10 +91,20 @@ public abstract class Entity {
 
     /** Print collection as a string using toShortString if available */
     private String printCollection(Collection<?> value) {
+        // Sort the collection,
+        // Exception here if not of Comparable types, but that should not happen with our entities
+        List<?> sortedList=new ArrayList<>(value);
+
+        try {
+            sortedList.sort(null); // Sort w/o external comparator
+        } catch (Exception e) {
+            sortedList=new ArrayList<>(value); // Unsorted version
+        }
+
         boolean firstRun = true;
         StringBuilder builder=new StringBuilder().append('[');
 
-        for (Object o : value) {
+        for (Object o : sortedList) {
             if (!firstRun) {
                 builder.append(", "); // Separate by commas
             } else {

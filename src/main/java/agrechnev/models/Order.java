@@ -6,8 +6,9 @@ import java.time.LocalDate;
 /**
  * Created by Oleksiy Grechnyev on 10/20/2016.
  * Order class -> ORDERS table
+ * Comparable by order_num
  */
-public final class Order extends Entity  {
+public final class Order extends Entity implements Comparable<Order> {
     // Proper fields
     private int order_num;
     private LocalDate order_date;
@@ -53,6 +54,11 @@ public final class Order extends Entity  {
     @Override
     public int hashCode() {
         return order_num;
+    }
+
+    @Override
+    public int compareTo(Order o) {
+        return Integer.compare(order_num,o.order_num);
     }
 
     //-----------------------------------------------------------------
