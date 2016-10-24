@@ -8,10 +8,8 @@ import org.jdom2.input.SAXBuilder;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by Oleksiy Grechnyev on 10/22/2016.
@@ -38,6 +36,9 @@ public class EntityLinkTable {
         }
     }
 
+
+
+
     /**
      * Costructor:
      * Load table from an XML file
@@ -50,53 +51,74 @@ public class EntityLinkTable {
         try {
             // Read the XML file using JDOM
             Document document = new SAXBuilder().build(new File(fileName));
-            Element root=document.getRootElement();
+            Element root = document.getRootElement();
             if (!root.getName().equals("links")) {
                 throw new EntityLinkException("EntityLinkTable: no root element <links> in the XML file");
             }
 
             // Get the class prefix if any
-            String prefix=root.getAttributeValue("prefix");
+            String prefix = root.getAttributeValue("prefix");
             if (prefix == null) {
-                prefix="";
+                prefix = "";
             }
 
             // Get all links as a list and add process them one by one
-            List<Element> elements=root.getChildren();
+            List<Element> elements = root.getChildren();
             for (Element element : elements) {
-                addXMLLink(element,prefix);
+                addXMLLink(element, prefix);
             }
 
-        } catch (IOException|JDOMException e) {
-            throw new EntityLinkException("Exception in EntityLinkTable ",e);
+        } catch (IOException | JDOMException e) {
+            throw new EntityLinkException("Exception in EntityLinkTable ", e);
         }
+    }
+
+    // Getters
+    public Set<EntityLink> getLinkTable() {
+        return linkTable;
+    }
+
+    public Set<Field> getFieldTable() {
+        return fieldTable;
+    }
+
+    /**
+     * Get all links of a specified entity class
+     * @param className full name of the Class
+     * @return all links of this class
+     */
+    public Set<EntityLink> getClassLinks(String className){
+        return linkTable.stream()
+                .filter(l->l.getClass_S().equals(className) || l.getClass_L().equals(className))
+                .collect(Collectors.toSet());
     }
 
     /**
      * Parse a JDOM XML <link> linkTag and add it to the table
+     *
      * @param linkTag <link> JDOM element
-     * @param prefix class prefix, e.g. "agrechnev.models."
+     * @param prefix  class prefix, e.g. "agrechnev.models."
      * @throws EntityLinkException If syntax error in XML
      */
     private void addXMLLink(Element linkTag, String prefix) throws EntityLinkException {
         // Check that the XML element is <link>
-        String name=linkTag.getName();
+        String name = linkTag.getName();
         if (!name.equals("link")) {
-            throw new EntityLinkException(String.format("addXMLLink: wrong tag <%s>, expected <link>",name));
+            throw new EntityLinkException(String.format("addXMLLink: wrong tag <%s>, expected <link>", name));
         }
 
         // Read the values of classes and fields
 
-        String class_S= getTagValue(linkTag,"class_s");
-        String field_S= getTagValue(linkTag,"field_s");
-        String class_L= getTagValue(linkTag,"class_l");
-        String field_L= getTagValue(linkTag,"field_l");
+        String class_S = getTagValue(linkTag, "class_s");
+        String field_S = getTagValue(linkTag, "field_s");
+        String class_L = getTagValue(linkTag, "class_l");
+        String field_L = getTagValue(linkTag, "field_l");
 
         // Now read the <columns> tag
-        List<String> columns_S=new ArrayList<>();
-        List<String> columns_L=new ArrayList<>();
+        List<String> columns_S = new ArrayList<>();
+        List<String> columns_L = new ArrayList<>();
 
-        Element element=linkTag.getChild("columns");
+        Element element = linkTag.getChild("columns");
         if (element == null) throw new EntityLinkException("addXMLLink: no <columns> in a link");
         for (Element columnTag : element.getChildren()) {
             // Check that the XML element is <column>
@@ -106,17 +128,17 @@ public class EntityLinkTable {
             }
 
             // Add the <s> tag
-            columns_S.add(getTagValue(columnTag,"s"));
+            columns_S.add(getTagValue(columnTag, "s"));
             // Add the <l> tag
-            columns_S.add(getTagValue(columnTag,"l"));
+            columns_L.add(getTagValue(columnTag, "l"));
         }
 
         // Add the class prefix
-        class_S=prefix+class_S;
-        class_L=prefix+class_L;
+        class_S = prefix + class_S;
+        class_L = prefix + class_L;
 
         // Create a new link object
-        EntityLink newLink=new EntityLink(class_S,field_S,class_L,field_L,columns_S,columns_L);
+        EntityLink newLink = new EntityLink(class_S, field_S, class_L, field_L, columns_S, columns_L);
 
         // Add it to the table with all checks
         addLink(newLink);
@@ -124,15 +146,16 @@ public class EntityLinkTable {
 
     /**
      * JDOM getChildText, throwing exception if the text is null or empty
+     *
      * @param element The parent element
-     * @param child The child tag name
-     * @return  The child tag text
+     * @param child   The child tag name
+     * @return The child tag text
      * @throws EntityLinkException if null or empty
      */
     private static String getTagValue(Element element, String child) throws EntityLinkException {
-        String result=element.getChildText(child);
+        String result = element.getChildText(child);
         if (result == null || result.trim().equals(""))
-            throw new EntityLinkException(String.format("getTagValue: tag <%s> not found or empty",child));
+            throw new EntityLinkException(String.format("getTagValue: tag <%s> not found or empty", child));
 
         return result.trim();
     }
@@ -146,15 +169,15 @@ public class EntityLinkTable {
 
         // Check that field names are correct and not used twice
         // then add fields to fieldTable
-        Field fS=addField(cS,newLink.getField_S());
-        Field fL=addField(cL,newLink.getField_L());
+        Field fS = addField(cS, newLink.getField_S());
+        Field fL = addField(cL, newLink.getField_L());
 
         // Check field types
         if (fL.getType() != cS) {
             throw new EntityLinkException(String.format("Field %s.%s is of wrong type", cL.getName(), fL.getName()));
         }
 
-        if (fS.getType() != HashSet.class) {
+        if (fS.getType() != Set.class) {
             throw new EntityLinkException(String.format("Field %s.%s is of wrong type", cS.getName(), fS.getName()));
         }
 
@@ -164,6 +187,7 @@ public class EntityLinkTable {
 
     /**
      * Find class by name, exception if not found
+     *
      * @param name Class name
      * @return Class object
      * @throws EntityLinkException if class does not exist
@@ -171,7 +195,7 @@ public class EntityLinkTable {
     private Class checkClass(String name) throws EntityLinkException {
         Class c;
         try {
-            c=Class.forName(name);
+            c = Class.forName(name);
         } catch (ClassNotFoundException e) {
             throw new EntityLinkException(String.format("Cannot find class %s", name));
         }
@@ -180,7 +204,8 @@ public class EntityLinkTable {
 
     /**
      * Check that field is correct and add it to fieldTable
-     * @param c  Class
+     *
+     * @param c    Class
      * @param name Field name
      * @return Field object
      * @throws EntityLinkException on error
@@ -188,7 +213,7 @@ public class EntityLinkTable {
     private Field addField(Class c, String name) throws EntityLinkException {
         Field f;
         try {
-            f=c.getField(name);
+            f = c.getDeclaredField(name);
         } catch (NoSuchFieldException e) {
             throw new EntityLinkException(String.format("Cannot find field %s", name));
         }

@@ -12,11 +12,11 @@ import java.util.List;
  * The only real reason for me to create this class was to write
  * the universal toString
  * Consider this a little funny exercise on reflections
- *
+ * <p>
  * After a while I added comparable to all children (but not Entity itself) to allow for sorting
  * This is needed for unit tests as the unsorted results depend on the SQL implementation
  */
-public abstract class Entity{
+public abstract class Entity {
 
     /**
      * Print all fields of an Entity object as a String using reflections
@@ -69,7 +69,7 @@ public abstract class Entity{
 
         // Get the value as a string
         try {
-            Object value=field.get(this);
+            Object value = field.get(this);
 
             if (value == null) {
                 return "NULL";
@@ -89,20 +89,22 @@ public abstract class Entity{
 
     }
 
-    /** Print collection as a string using toShortString if available */
+    /**
+     * Print collection as a string using toShortString if available
+     */
     private String printCollection(Collection<?> value) {
         // Sort the collection,
         // Exception here if not of Comparable types, but that should not happen with our entities
-        List<?> sortedList=new ArrayList<>(value);
+        List<?> sortedList = new ArrayList<>(value);
 
         try {
             sortedList.sort(null); // Sort w/o external comparator
         } catch (Exception e) {
-            sortedList=new ArrayList<>(value); // Unsorted version
+            sortedList = new ArrayList<>(value); // Unsorted version
         }
 
         boolean firstRun = true;
-        StringBuilder builder=new StringBuilder().append('[');
+        StringBuilder builder = new StringBuilder().append('[');
 
         for (Object o : sortedList) {
             if (!firstRun) {
@@ -120,7 +122,9 @@ public abstract class Entity{
         return builder.toString();
     }
 
-    /** Print an object as a short string if it has the method toShortString() */
+    /**
+     * Print an object as a short string if it has the method toShortString()
+     */
     private String printShort(Object o) {
         if (o == null) {
             return "NULL";
@@ -128,10 +132,10 @@ public abstract class Entity{
 
         try {
             // Let us see if the object has toShortString()
-            Method toShort=o.getClass().getDeclaredMethod("toShortString");
+            Method toShort = o.getClass().getDeclaredMethod("toShortString");
             return (String) toShort.invoke(o);
 
-        } catch (NoSuchMethodException|InvocationTargetException|IllegalAccessException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
             return ""; // No description
         }
     }

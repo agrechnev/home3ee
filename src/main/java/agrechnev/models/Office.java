@@ -21,7 +21,7 @@ public final class Office extends Entity implements Comparable<Office> {
     private Salesrep mgr;
 
     // Links to Many
-    private Set<Salesrep> employees=new HashSet<>();
+    private Set<Salesrep> employees = new HashSet<>();
 
     //-----------------------------------------------------------------
     // equals() and hashCode() include proper fields only
@@ -48,7 +48,7 @@ public final class Office extends Entity implements Comparable<Office> {
 
     @Override
     public int compareTo(Office o) {
-        return Integer.compare(office,o.office);
+        return Integer.compare(office, o.office);
     }
 
 //-----------------------------------------------------------------

@@ -32,6 +32,7 @@ public class DSource {
         public DSourceException(String message) {
             super(message);
         }
+
         public DSourceException(String message, Throwable cause) {
             super(message, cause);
         }
@@ -56,14 +57,15 @@ public class DSource {
      */
     public static DSource getInstance() throws DSourceException {
         if (instance == null) {
-            instance=new DSource();
+            instance = new DSource();
         }
         return instance;
     }
 
     /**
      * Opens a new SQL connection with parameters from the config cile
-     * @return  a new SQL connection
+     *
+     * @return a new SQL connection
      * Exits on exception
      */
     public Connection getConnection() throws DSourceException {
@@ -71,14 +73,14 @@ public class DSource {
         try {
             // Load the DB driver if provided
             // Not needed nowadays, but wouldn't hurt
-            if (DB_DRIVER.length()>0) Class.forName(DB_DRIVER);
+            if (DB_DRIVER.length() > 0) Class.forName(DB_DRIVER);
 
             // Open SQL connection, exception if wrong parameters
-            return DriverManager.getConnection(DB_URL,DB_USER,DB_PASSWORD);
+            return DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
 
-        } catch (SQLException|ClassNotFoundException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             // Any exception = rethrow as DSourceException
-            throw new DSourceException("Exception in DSource.getConnection()",e);
+            throw new DSourceException("Exception in DSource.getConnection()", e);
         }
     }
 
@@ -94,12 +96,14 @@ public class DSource {
             System.out.println("password=" + DB_PASSWORD);
             System.out.println("runinit=" + DB_RUNINIT);
 
-            // Run the init script
-            System.out.println("Running the init script ...");
-            if (DB_RUNINIT) runInitScript();
+            // Run the init script if needed
+            if (DB_RUNINIT) {
+                System.out.println("Running the init script ...");
+                runInitScript();
+            }
 
         } catch (Exception e) { // Any exception = rethrow as DSourceException
-            throw new DSourceException("Exception in DSource()",e);
+            throw new DSourceException("Exception in DSource()", e);
         }
 
     }
@@ -120,7 +124,7 @@ public class DSource {
 
         // The connection root element
         Element connection = document.getDocumentElement();
-        if (! connection.getTagName().equals("connection")) {
+        if (!connection.getTagName().equals("connection")) {
             throw new DSourceException("Root tag in scripts/connection.xml must be <connection>");
         }
 //                (Element) document.getElementsByTagName("connection").item(0);
@@ -129,19 +133,19 @@ public class DSource {
         // Empty strings allowed, no checks here
         // If anything goes wrong it's an SQLException -> DSourceException in getConnection()
 
-        DB_DRIVER = getTag(connection,"driver");
-        DB_URL = getTag(connection,"url");
-        DB_USER = getTag(connection,"user");
-        DB_PASSWORD = getTag(connection,"password");
-        DB_RUNINIT = Boolean.parseBoolean(getTag(connection,"runinit"));
+        DB_DRIVER = getTag(connection, "driver");
+        DB_URL = getTag(connection, "url");
+        DB_USER = getTag(connection, "user");
+        DB_PASSWORD = getTag(connection, "password");
+        DB_RUNINIT = Boolean.parseBoolean(getTag(connection, "runinit"));
 
     }
 
     private static String getTag(Element connection, String tagName) throws DSourceException {
         NodeList elements = connection.getElementsByTagName(tagName);
 
-        if (elements.getLength()==0) {
-            throw new DSourceException(String.format("Cannot find XML tag <%s>",tagName));
+        if (elements.getLength() == 0) {
+            throw new DSourceException(String.format("Cannot find XML tag <%s>", tagName));
         }
 
         return elements.item(0).getTextContent().trim();

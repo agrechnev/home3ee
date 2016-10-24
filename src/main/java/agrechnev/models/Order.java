@@ -32,6 +32,7 @@ public final class Order extends Entity implements Comparable<Order> {
 
     /**
      * Short description of an object with no recursions
+     *
      * @return
      */
 
@@ -51,6 +52,7 @@ public final class Order extends Entity implements Comparable<Order> {
         return amount != null ? amount.equals(order.amount) : order.amount == null;
 
     }
+
     @Override
     public int hashCode() {
         return order_num;
@@ -58,7 +60,7 @@ public final class Order extends Entity implements Comparable<Order> {
 
     @Override
     public int compareTo(Order o) {
-        return Integer.compare(order_num,o.order_num);
+        return Integer.compare(order_num, o.order_num);
     }
 
     //-----------------------------------------------------------------

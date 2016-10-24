@@ -1,5 +1,7 @@
 package agrechnev.ewriter;
 
+import agrechnev.models.Entity;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -21,11 +23,12 @@ public class EWriter {
     /**
      * Convert a set of entities into a sorted List<String> using internal comparator
      * fllowed by toString()
+     *
      * @param set A set of entities
      * @return The sorted list
      */
-    public static List<String> sortedSet(Set<?> set){
-        List<?> entityList=new ArrayList<>(set);
+    public static List<String> sortedSet(Set<? extends Entity> set) {
+        List<?> entityList = new ArrayList<>(set);
         entityList.sort(null); // Sort with the internal comparator
 
         return entityList.stream().map(Object::toString).collect(Collectors.toList());
@@ -34,33 +37,36 @@ public class EWriter {
     /**
      * Convert a set of entities into a sorted List<String> using internal comparator
      * fllowed by toString() and convert to array String[]
+     *
      * @param set A set of entities
      * @return The sorted array
      */
-    public static String[] sortedSetToArray(Set<?> set){
+    public static String[] sortedSetToArray(Set<? extends Entity> set) {
         return sortedSet(set).toArray(new String[]{});
     }
 
     /**
      * Convert a set of entities into a sorted List<String>  and print to stdout
+     *
      * @param set A set of entities
      */
-    public static void printSortedSet(Set<?> set){
-        List<String> stringList=sortedSet(set);
+    public static void printSortedSet(Set<? extends Entity> set) {
+        List<String> stringList = sortedSet(set);
 
         System.out.println(stringList.size() + " lines");
         System.out.println("");
 
-        for (String s: stringList) {
+        for (String s : stringList) {
             System.out.println(s);
         }
     }
 
     /**
      * Convert a set of entities into a sorted  List<String> and writes to file
+     *
      * @param set A set of entities
      */
-    public static void writeSortedSet(Set<?> set, Path path) throws IOException {
-        Files.write(path, sortedSet(set),StandardCharsets.UTF_8);
+    public static void writeSortedSet(Set<? extends Entity> set, Path path) throws IOException {
+        Files.write(path, sortedSet(set), StandardCharsets.UTF_8);
     }
 }

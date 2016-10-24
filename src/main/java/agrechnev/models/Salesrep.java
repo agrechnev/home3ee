@@ -10,7 +10,7 @@ import java.util.Set;
  * Salesrep class -> SALESREPS table
  * Comparable by empl_num
  */
-public final class Salesrep extends Entity implements Comparable<Salesrep>{
+public final class Salesrep extends Entity implements Comparable<Salesrep> {
     // Proper fields
     private int empl_num;
     private String name;
@@ -25,10 +25,10 @@ public final class Salesrep extends Entity implements Comparable<Salesrep>{
     private Office rep_office;
 
     // Links to Many
-    private Set<Customer> customers=new HashSet<>();
-    private Set<Office> offices=new HashSet<>();
-    private Set<Order> orders=new HashSet<>();
-    private Set<Salesrep> managerTo=new HashSet<>();
+    private Set<Customer> customers = new HashSet<>();
+    private Set<Office> offices = new HashSet<>();
+    private Set<Order> orders = new HashSet<>();
+    private Set<Salesrep> managerTo = new HashSet<>();
 
     //-----------------------------------------------------------------
     // equals() and hashCode() include proper fields only
@@ -57,7 +57,7 @@ public final class Salesrep extends Entity implements Comparable<Salesrep>{
 
     @Override
     public int compareTo(Salesrep o) {
-        return Integer.compare(empl_num,o.empl_num);
+        return Integer.compare(empl_num, o.empl_num);
     }
 
 //-----------------------------------------------------------------

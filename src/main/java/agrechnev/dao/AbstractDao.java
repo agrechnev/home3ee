@@ -16,7 +16,7 @@ import java.util.Set;
  * DAO might create entities for a linked objects if specified
  * Reads all objects only
  * Uses DSource as the SQL connection source
- *
+ * <p>
  * Idea: Dao can process links actively (master) by method convertLinks()
  * and passively (slave) by providing methods getJoinString() and convertResults()
  * This simple implementation can process inly 1 link and 2 entity classes:
@@ -28,9 +28,9 @@ import java.util.Set;
 
 public abstract class AbstractDao<T extends Entity> {
     protected Class<T> tClass; // The class of T
-    protected  String tablePrefix; // The table prefix for column names, like "" or "ORDERS."
+    protected String tablePrefix; // The table prefix for column names, like "" or "ORDERS."
 
-    public static class DaoException extends Exception{
+    public static class DaoException extends Exception {
         public DaoException(String message) {
             super(message);
         }
@@ -45,16 +45,17 @@ public abstract class AbstractDao<T extends Entity> {
      * Return the old element (duplicate ) equal to the new one if found
      * Add the new element and return it if not
      *
-     * @param set The set to add to
+     * @param set  The set to add to
      * @param item The item to seek and add
-     * @param <U> The element type
+     * @param <U>  The set element type
+     * @param <U>  The item type
      * @return The old or the new element
      */
-    protected static <U> U addToSet(Set<U> set, U item){
+    protected static <U, V> U addToSet(Set<U> set, V item) {
         if (!set.contains(item)) {
             // Not in set: add the new element to the set and return it
-            set.add(item);
-            return item;
+            set.add((U) item);
+            return (U) item;
         }
 
         // Find an element equal to item in the set
@@ -71,12 +72,17 @@ public abstract class AbstractDao<T extends Entity> {
 
     /**
      * Constructor
+     *
      * @param tClass
      * @param tablePrefix
      */
     protected AbstractDao(Class<T> tClass, String tablePrefix) {
         this.tClass = tClass;
         this.tablePrefix = tablePrefix;
+
+        if (tablePrefix == null) {
+            tablePrefix = "";
+        }
     }
 
 
@@ -86,8 +92,9 @@ public abstract class AbstractDao<T extends Entity> {
 
     /**
      * Get all elements from a database table as a set
+     *
      * @param linkedDao The Dao object linked with this Dao
-     * @return  set of all elements
+     * @return set of all elements
      */
     public Set<T> getAll(AbstractDao<?> linkedDao) throws DaoException {
         Set<T> set = new HashSet<>(); // The set of type-T beans
@@ -95,14 +102,14 @@ public abstract class AbstractDao<T extends Entity> {
         // The set of linked beans
         // Note: linkSet is not returned and not kept
         // but we use it internally to avoid duplicates in links
-        Set<Entity> linkSet=new HashSet<>();
+        Set<Entity> linkSet = new HashSet<>();
 
         String sqlQuery = getSqlQuery(linkedDao);
 
         // Print the query
         System.out.println(sqlQuery);
 
-        try (Connection connection= DSource.getInstance().getConnection();
+        try (Connection connection = DSource.getInstance().getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(sqlQuery)) {
 
@@ -118,7 +125,7 @@ public abstract class AbstractDao<T extends Entity> {
                 // We do not want to create repeated beans, we want to add new orders
                 // to the orders (Set) field of the existing Customer bean
                 // The logic must be implemented in convertLinks()
-                bean=addToSet(set,bean);
+                bean = addToSet(set, bean);
 
                 // Add links, if any to either the new or the old bean
                 // from the current resultSet line
@@ -126,9 +133,9 @@ public abstract class AbstractDao<T extends Entity> {
             }
 
 
-        } catch (SQLException|DSource.DSourceException e) {
+        } catch (SQLException | DSource.DSourceException e) {
             // Re-throw as DaoException
-            throw new DaoException("Exception in AbstractDao.getAll",e);
+            throw new DaoException("Exception in AbstractDao.getAll", e);
         }
 
         return set;
@@ -137,13 +144,16 @@ public abstract class AbstractDao<T extends Entity> {
 
     /**
      * Create a join string e.g. " LEFT JOIN ORDERS ON CUST_NUM=CUST"
-     * when called in the Order DAO from the Customer DAO
-     * @param fromClass the class of the beans of calling DAO (i.e. Customer.class in our example)
+     * when called in the Order DAO (slave) from the Customer DAO (master)
+     *
+     * @param masterClass       the class of the beans of calling DAO (i.e. Customer.class in our example)
+     * @param masterTablePrefix The table prefix of the Master DAO calling this slave routine
      * @return The join string
      */
-    public String getJoinString(Class fromClass) {
+    public String getJoinString(Class masterClass, String masterTablePrefix) {
         return "";
-    };
+    }
+
 
     /**
      * Convert a line of SQL results into a bean of class T
@@ -157,21 +167,21 @@ public abstract class AbstractDao<T extends Entity> {
     /**
      * Add any links to the bean, if any
      * Creates new beans of the linked class
-     * @param bean  The bean to work with
-     * @param resultSet  SQL results set (current line)
-     * @param linkSet The set of linked beans
+     *
+     * @param bean      The bean to work with
+     * @param resultSet SQL results set (current line)
+     * @param linkSet   The set of linked beans
      * @param linkedDao The Dao for the link type object
      */
-    protected abstract void convertLinks(T bean, ResultSet resultSet, Set<Entity> linkSet, AbstractDao<?> linkedDao);
-
+    protected abstract void convertLinks(T bean, ResultSet resultSet, Set<? extends Entity> linkSet, AbstractDao<?> linkedDao);
 
 
     /**
      * Get SQL query for getAll
      * e.g. "SELECT * FROM CUSTOMERS JOIN ORDERS ON CUST_NUM=CUST;"
      *
-     * @return SQL query
      * @param linkedDao The Dao for the link type object (e.g. OrderDao)
+     * @return SQL query
      */
     protected abstract String getSqlQuery(AbstractDao<?> linkedDao);
 

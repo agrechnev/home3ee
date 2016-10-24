@@ -4,13 +4,13 @@ import java.util.List;
 
 /**
  * Link table node representing a single one-many link
- *
- *  The link has the structure
- *  Class_S, filed_S, Class_L, field_L, columns_S, columns_L
- *  Where fieldS has type Set<ClassL>
- *  And fieldL has type ClassS
- *
- *   columns_S, columns_L = names of columns to match
+ * <p>
+ * The link has the structure
+ * Class_S, filed_S, Class_L, field_L, columns_S, columns_L
+ * Where fieldS has type Set<ClassL>
+ * And fieldL has type ClassS
+ * <p>
+ * columns_S, columns_L = names of columns to match
  */
 
 public class EntityLink {
@@ -27,6 +27,7 @@ public class EntityLink {
 
     /**
      * Constructor
+     *
      * @param class_S
      * @param field_S
      * @param class_L

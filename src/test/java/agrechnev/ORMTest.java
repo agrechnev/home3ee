@@ -13,9 +13,9 @@ import org.junit.Test;
  */
 public class ORMTest {
     // Hand-written DAOs
-    CustomerDao customerDao=new CustomerDao();
-    OrderDao orderDao=new OrderDao();
-    SalesrepDao salesrepDao=new SalesrepDao();
+    CustomerDao customerDao = new CustomerDao();
+    OrderDao orderDao = new OrderDao();
+    SalesrepDao salesrepDao = new SalesrepDao();
 
     @Before
     public void init() throws DSource.DSourceException {
@@ -24,19 +24,19 @@ public class ORMTest {
     }
 
     /**
-     *Hand-written dao test: CUSTOMERS JOIN ORDERS
-    */
+     * Hand-written dao test: CUSTOMERS JOIN ORDERS
+     */
     @Test
     public void hand_cu_or() throws Exception {
-        Tester.testHandDao(customerDao,orderDao,"tables/cu_or.txt");
+        Tester.testHandDao(customerDao, orderDao, "tables/cu_or.txt");
     }
 
 
     /**
-     *Hand-written dao test: CUSTOMERS JOIN SALESREPS
+     * Hand-written dao test: CUSTOMERS JOIN SALESREPS
      */
     @Test
     public void hand_cu_sr() throws Exception {
-        Tester.testHandDao(customerDao,salesrepDao,"tables/cu_sr.txt");
+        Tester.testHandDao(customerDao, salesrepDao, "tables/cu_sr.txt");
     }
 }

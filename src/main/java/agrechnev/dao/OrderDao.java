@@ -29,14 +29,14 @@ public class OrderDao extends AbstractDao<Order> {
      */
     @Override
     public Order convertResult(ResultSet resultSet) {
-        Order order=new Order(); // Create a new Order bean
+        Order order = new Order(); // Create a new Order bean
 
         try {
-            order.setOrder_num(resultSet.getInt(tablePrefix+"ORDER_NUM"));
-            order.setOrder_date(resultSet.getDate(tablePrefix+"ORDER_DATE").toLocalDate());
-            order.setQty(resultSet.getInt(tablePrefix+"QTY"));
-            order.setAmount(resultSet.getBigDecimal(tablePrefix+"AMOUNT"));
-        } catch (SQLException|NullPointerException e) {
+            order.setOrder_num(resultSet.getInt(tablePrefix + "ORDER_NUM"));
+            order.setOrder_date(resultSet.getDate(tablePrefix + "ORDER_DATE").toLocalDate());
+            order.setQty(resultSet.getInt(tablePrefix + "QTY"));
+            order.setAmount(resultSet.getBigDecimal(tablePrefix + "AMOUNT"));
+        } catch (SQLException | NullPointerException e) {
             // Return null bean silently
             // This is not an error when working with left joins
             return null;
@@ -46,8 +46,8 @@ public class OrderDao extends AbstractDao<Order> {
     }
 
     @Override
-    public String getJoinString(Class fromClass) {
-        if (fromClass== Customer.class) {
+    public String getJoinString(Class masterClass, String masterTablePrefix) {
+        if (masterClass == Customer.class) {
             // Make a join line
             return " LEFT JOIN ORDERS ON CUSTOMERS.CUST_NUM=ORDERS.CUST";
         } else {
@@ -56,7 +56,7 @@ public class OrderDao extends AbstractDao<Order> {
     }
 
     @Override
-    protected void convertLinks(Order bean, ResultSet resultSet, Set<Entity> linkSet, AbstractDao<?> linkedDao) {
+    protected void convertLinks(Order bean, ResultSet resultSet, Set<? extends Entity> linkSet, AbstractDao<?> linkedDao) {
 
     }
 

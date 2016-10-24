@@ -20,7 +20,7 @@ public final class Product extends Entity implements Comparable<Product> {
     // Links to one
 
     // Links to Many
-    private Set<Order> orders=new HashSet<>();
+    private Set<Order> orders = new HashSet<>();
 
     //-----------------------------------------------------------------
     // equals() and hashCode() include proper fields only
@@ -49,9 +49,9 @@ public final class Product extends Entity implements Comparable<Product> {
 
     @Override
     public int compareTo(Product o) {
-        int result=product_id.compareTo(o.product_id);
+        int result = product_id.compareTo(o.product_id);
 
-        return result==0 ?  mfr_id.compareTo(o.mfr_id)  : result;
+        return result == 0 ? mfr_id.compareTo(o.mfr_id) : result;
     }
 //-----------------------------------------------------------------
     // Empty construcor, getters, setters

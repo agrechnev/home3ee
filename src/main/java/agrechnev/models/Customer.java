@@ -9,7 +9,7 @@ import java.util.Set;
  * Customer class -> CUSTOMERS table
  * Comparable by cust_num
  */
-public final class Customer extends Entity implements Comparable<Customer>  {
+public final class Customer extends Entity implements Comparable<Customer> {
     // Proper fields
     private int cust_num;
     private String company;
@@ -19,10 +19,11 @@ public final class Customer extends Entity implements Comparable<Customer>  {
     private Salesrep cust_rep;
 
     // Links to Many
-    private Set<Order> orders=new HashSet<>();
+    private Set<Order> orders = new HashSet<>();
 
     /**
      * Short description of an object with no recursions
+     *
      * @return
      */
     @Override
@@ -55,7 +56,7 @@ public final class Customer extends Entity implements Comparable<Customer>  {
 
     @Override
     public int compareTo(Customer o) {
-        return Integer.compare(cust_num,o.cust_num);
+        return Integer.compare(cust_num, o.cust_num);
     }
 
     //-----------------------------------------------------------------
