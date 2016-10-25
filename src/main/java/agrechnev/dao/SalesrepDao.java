@@ -52,14 +52,14 @@ public class SalesrepDao extends AbstractDao<Salesrep> {
     public String getJoinString(Class masterClass, String masterTablePrefix) {
         if (masterClass == Customer.class) {
             // Make a join line
-            return " LEFT JOIN SALESREPS ON customers.CUST_REP=salesreps.EMPL_NUM";
+            return " LEFT JOIN SALESREPS ON CUSTOMERS.CUST_REP=SALESREPS.EMPL_NUM";
         } else {
             return "";
         }
     }
 
     @Override
-    protected void convertLinks(Salesrep bean, ResultSet resultSet, Set<? extends Entity> linkSet, AbstractDao<?> linkedDao) {
+    protected void convertLinks(Salesrep bean, ResultSet resultSet, Set<? extends Entity> slaveSet, AbstractDao<?> slaveDao) {
 
     }
 

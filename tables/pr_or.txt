@@ -1,0 +1,25 @@
+Product{mfr_id = FEA, product_id = 112, description = Housing, price = 148.00, qty_on_hand = 115, orders = [{113058, 2008-02-23, 10, 1480.00}]}
+Product{mfr_id = FEA, product_id = 114, description = Motor Mount, price = 243.00, qty_on_hand = 15, orders = [{112989, 2008-01-03, 6, 1458.00}, {113062, 2008-02-24, 10, 2430.00}]}
+Product{mfr_id = REI, product_id = 2A44G, description = Hinge Pin, price = 350.00, qty_on_hand = 14, orders = [{112975, 2007-10-12, 6, 2100.00}]}
+Product{mfr_id = REI, product_id = 2A44L, description = Left Hinge, price = 4500.00, qty_on_hand = 12, orders = [{112961, 2007-12-17, 7, 31500.00}]}
+Product{mfr_id = REI, product_id = 2A44R, description = Right Hinge, price = 4500.00, qty_on_hand = 12, orders = [{113042, 2008-02-20, 5, 22500.00}, {113045, 2008-02-02, 10, 45000.00}]}
+Product{mfr_id = REI, product_id = 2A45C, description = Ratchet Link, price = 79.00, qty_on_hand = 210, orders = [{112993, 2007-01-04, 24, 1896.00}, {113034, 2008-01-29, 8, 632.00}]}
+Product{mfr_id = ACI, product_id = 41001, description = Size 1 Wiget, price = 55.00, qty_on_hand = 277, orders = []}
+Product{mfr_id = ACI, product_id = 41002, description = Size 2 Widget, price = 76.00, qty_on_hand = 167, orders = [{112992, 2007-11-04, 10, 760.00}, {113027, 2008-01-22, 54, 4104.00}]}
+Product{mfr_id = ACI, product_id = 41003, description = Size 3 Widget, price = 107.00, qty_on_hand = 207, orders = [{113012, 2008-01-11, 35, 3745.00}]}
+Product{mfr_id = BIC, product_id = 41003, description = Handle, price = 652.00, qty_on_hand = 3, orders = [{112997, 2008-01-08, 1, 652.00}, {113013, 2008-01-14, 1, 652.00}]}
+Product{mfr_id = ACI, product_id = 41004, description = Size 4 Widget, price = 117.00, qty_on_hand = 139, orders = [{112963, 2007-12-17, 28, 3276.00}, {112968, 2007-10-12, 34, 3978.00}, {112983, 2007-12-27, 6, 702.00}]}
+Product{mfr_id = ACI, product_id = 4100X, description = Widget Adjuster, price = 25.00, qty_on_hand = 37, orders = [{113055, 2008-02-15, 6, 150.00}, {113057, 2008-02-18, 24, 600.00}]}
+Product{mfr_id = ACI, product_id = 4100Y, description = Widget Remover, price = 2750.00, qty_on_hand = 25, orders = [{112987, 2007-12-31, 11, 27500.00}]}
+Product{mfr_id = ACI, product_id = 4100Z, description = Widget Installer, price = 2500.00, qty_on_hand = 28, orders = [{112979, 2007-10-12, 6, 15000.00}, {113036, 2008-01-30, 9, 22500.00}]}
+Product{mfr_id = BIC, product_id = 41089, description = Retainer, price = 225.00, qty_on_hand = 78, orders = []}
+Product{mfr_id = BIC, product_id = 41627, description = Plate, price = 180.00, qty_on_hand = 0, orders = []}
+Product{mfr_id = IMM, product_id = 773C, description = 300-lb Brace, price = 975.00, qty_on_hand = 28, orders = [{113007, 2008-01-08, 3, 2925.00}]}
+Product{mfr_id = IMM, product_id = 775C, description = 500-lb Brace, price = 1425.00, qty_on_hand = 5, orders = [{113069, 2008-03-02, 22, 31350.00}]}
+Product{mfr_id = IMM, product_id = 779C, description = 900-LB Brace, price = 1875.00, qty_on_hand = 9, orders = [{113003, 2008-01-25, 3, 5625.00}, {113048, 2008-02-10, 2, 3750.00}]}
+Product{mfr_id = IMM, product_id = 887H, description = Brace Holder, price = 54.00, qty_on_hand = 223, orders = []}
+Product{mfr_id = IMM, product_id = 887P, description = Brace Pin, price = 250.00, qty_on_hand = 24, orders = []}
+Product{mfr_id = IMM, product_id = 887X, description = Brace Retainer, price = 475.00, qty_on_hand = 32, orders = []}
+Product{mfr_id = QSA, product_id = XK47, description = Reducer, price = 355.00, qty_on_hand = 38, orders = [{113024, 2008-01-20, 20, 7100.00}, {113049, 2008-02-10, 2, 776.00}, {113051, 2008-02-10, 4, 1420.00}, {113065, 2008-02-27, 6, 2130.00}]}
+Product{mfr_id = QSA, product_id = XK48, description = Reducer, price = 134.00, qty_on_hand = 203, orders = []}
+Product{mfr_id = QSA, product_id = XK48A, description = Reducer, price = 177.00, qty_on_hand = 37, orders = []}

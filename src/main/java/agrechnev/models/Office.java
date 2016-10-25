@@ -23,6 +23,17 @@ public final class Office extends Entity implements Comparable<Office> {
     // Links to Many
     private Set<Salesrep> employees = new HashSet<>();
 
+    /**
+     * Short description of an object with no recursions
+     *
+     * @return
+     */
+    @Override
+    public String toShortString() {
+        return "{" + office + ", " + city +
+                ", " + region + ", " + target +", " + sales + '}';
+    }
+
     //-----------------------------------------------------------------
     // equals() and hashCode() include proper fields only
 

@@ -4,5 +4,5 @@
     <url>jdbc:mysql://localhost/home2ee?useSSL=false</url>
     <user>agrechnev</user>
     <password>Q1w2E3r4</password>
-    <runinit>false</runinit>
+    <runinit>true</runinit>
 </connection>

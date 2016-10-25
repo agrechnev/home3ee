@@ -22,6 +22,22 @@ public final class Product extends Entity implements Comparable<Product> {
     // Links to Many
     private Set<Order> orders = new HashSet<>();
 
+    /**
+     * Short description of an object with no recursions
+     *
+     * @return
+     */
+    @Override
+    public String toShortString() {
+        return "{" + mfr_id +
+                ", " + product_id +
+                ", " + description +
+                ", " + price +
+                ", " + qty_on_hand +
+                '}';
+    }
+
+
     //-----------------------------------------------------------------
     // equals() and hashCode() include proper fields only
 

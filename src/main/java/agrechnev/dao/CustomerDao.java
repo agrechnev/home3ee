@@ -52,21 +52,21 @@ public class CustomerDao extends AbstractDao<Customer> {
      *
      * @param bean      The bean to work with
      * @param resultSet SQL results set (current line)
-     * @param linkSet   The set of linked beans
-     * @param linkedDao The Dao for the link type object
+     * @param slaveSet   The set of linked beans
+     * @param slaveDao The Dao for the link type object
      */
     @Override
-    protected void convertLinks(Customer bean, ResultSet resultSet, Set<? extends Entity> linkSet, AbstractDao<?> linkedDao) {
+    protected void convertLinks(Customer bean, ResultSet resultSet, Set<? extends Entity> slaveSet, AbstractDao<?> slaveDao) {
         // If linked to Order
-        if (linkedDao != null && linkedDao.getTClass() == Order.class) {
-            // Get the linked order bean
-            Order orderBean = (Order) linkedDao.convertResult(resultSet);
+        if (slaveDao != null && slaveDao.getTClass() == Order.class) {
+            // Get the slave Order bean
+            Order orderBean = (Order) slaveDao.convertResult(resultSet);
 
             if (orderBean == null) return; // Check for null bean: nothing to do in that case
 
 
             // Add to set or find an equal one if exists
-            orderBean = (Order) addToSet(linkSet, orderBean);
+            orderBean = (Order) addToSet(slaveSet, orderBean);
 
             // Link the orderBean to customer bean
             if (bean.getOrders() == null) {
@@ -78,13 +78,13 @@ public class CustomerDao extends AbstractDao<Customer> {
         }
 
         // If linked to Salesrep
-        if (linkedDao != null && linkedDao.getTClass() == Salesrep.class) {
-            // Get the linked Salesrep bean
-            Salesrep salesrepBean = (Salesrep) linkedDao.convertResult(resultSet);
+        if (slaveDao != null && slaveDao.getTClass() == Salesrep.class) {
+            // Get the slave Salesrep bean
+            Salesrep salesrepBean = (Salesrep) slaveDao.convertResult(resultSet);
             if (salesrepBean == null) return;  // Check for null bean: nothing to do in that case
 
             // Add to set or find an equal one if exists
-            salesrepBean = (Salesrep) addToSet(linkSet, salesrepBean);
+            salesrepBean = (Salesrep) addToSet(slaveSet, salesrepBean);
 
             // Link salesrepBean to customer bean
             if (salesrepBean.getCustomers() == null) {

@@ -56,7 +56,7 @@ public class OrderDao extends AbstractDao<Order> {
     }
 
     @Override
-    protected void convertLinks(Order bean, ResultSet resultSet, Set<? extends Entity> linkSet, AbstractDao<?> linkedDao) {
+    protected void convertLinks(Order bean, ResultSet resultSet, Set<? extends Entity> slaveSet, AbstractDao<?> slaveDao) {
 
     }
 

@@ -22,6 +22,11 @@ public final class Order extends Entity implements Comparable<Order> {
 
     // Links to Many
 
+    /**
+     * Short description of an object with no recursions
+     *
+     * @return
+     */
     @Override
     public String toShortString() {
         return "{" + order_num +

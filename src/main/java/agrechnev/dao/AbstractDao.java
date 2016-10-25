@@ -93,18 +93,27 @@ public abstract class AbstractDao<T extends Entity> {
     /**
      * Get all elements from a database table as a set
      *
-     * @param linkedDao The Dao object linked with this Dao
+     * @param slaveDao The Dao object linked with this Dao
      * @return set of all elements
      */
-    public Set<T> getAll(AbstractDao<?> linkedDao) throws DaoException {
+    public Set<T> getAll(AbstractDao<?> slaveDao) throws DaoException {
         Set<T> set = new HashSet<>(); // The set of type-T beans
 
-        // The set of linked beans
+        // The set of slave beans
         // Note: linkSet is not returned and not kept
         // but we use it internally to avoid duplicates in links
-        Set<Entity> linkSet = new HashSet<>();
+        Set<? extends Entity> slaveSet;
 
-        String sqlQuery = getSqlQuery(linkedDao);
+        // We use existing set if the master and slave classes coincide
+        // This means not creating the second copy of beans of the same class for self-reference
+        // Otherwise we create a new one for a different entity class
+        if (tClass == slaveDao.getTClass()) {
+            slaveSet = set;
+        } else {
+            slaveSet = new HashSet<Entity>();
+        }
+
+        String sqlQuery = getSqlQuery(slaveDao);
 
         // Print the query
         System.out.println(sqlQuery);
@@ -129,7 +138,7 @@ public abstract class AbstractDao<T extends Entity> {
 
                 // Add links, if any to either the new or the old bean
                 // from the current resultSet line
-                convertLinks(bean, resultSet, linkSet, linkedDao);
+                convertLinks(bean, resultSet, slaveSet, slaveDao);
             }
 
 
@@ -170,10 +179,10 @@ public abstract class AbstractDao<T extends Entity> {
      *
      * @param bean      The bean to work with
      * @param resultSet SQL results set (current line)
-     * @param linkSet   The set of linked beans
-     * @param linkedDao The Dao for the link type object
+     * @param slaveSet  The set of linked beans
+     * @param slaveDao  The Dao for the link type object
      */
-    protected abstract void convertLinks(T bean, ResultSet resultSet, Set<? extends Entity> linkSet, AbstractDao<?> linkedDao);
+    protected abstract void convertLinks(T bean, ResultSet resultSet, Set<? extends Entity> slaveSet, AbstractDao<?> slaveDao) throws DaoException;
 
 
     /**

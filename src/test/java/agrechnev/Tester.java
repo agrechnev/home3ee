@@ -22,14 +22,14 @@ public class Tester {
     }
 
     /**
-     * Test a query to the hand-writted DAOs
+     * Test a query to a couple of DAOs
      * Compares results to a text file
      *
      * @param dao1     Master DAO
      * @param dao2     Slave DAO
      * @param fileName File name containig results
      */
-    public static void testHandDao(AbstractDao dao1, AbstractDao dao2, String fileName) {
+    public static void testDao(AbstractDao dao1, AbstractDao dao2, String fileName) {
         try {
             // Get from DAO
             String[] actual = EWriter.sortedSetToArray(dao1.getAll(dao2));

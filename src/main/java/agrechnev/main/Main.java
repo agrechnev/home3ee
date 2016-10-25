@@ -7,8 +7,7 @@ import agrechnev.dao.SalesrepDao;
 import agrechnev.dsource.DSource;
 import agrechnev.ewriter.EWriter;
 import agrechnev.linktable.EntityLinkTable;
-import agrechnev.models.Customer;
-import agrechnev.models.Order;
+import agrechnev.models.*;
 import agrechnev.orm.ORMDao;
 
 import java.io.IOException;
@@ -34,14 +33,12 @@ public class Main {
         SalesrepDao salesrepHandDao = new SalesrepDao();
 
         // Read all customers from the DB, left join orders
-//        EWriter.printSortedSet(customerHandDao.getAll(orderHandDao));
-//        EWriter.writeSortedSet(customerHandDao.getAll(orderHandDao), Paths.get("tables/cu_or.txt"));
+        EWriter.printSortedSet(customerHandDao.getAll(orderHandDao));
 
         System.out.println("-------------------------------------");
 
         // Read all customers from the DB, left join salesreps
-//        EWriter.printSortedSet(customerHandDao.getAll(salesrepHandDao));
-//        EWriter.writeSortedSet(customerHandDao.getAll(salesrepHandDao), Paths.get("tables/cu_sr.txt"));
+        EWriter.printSortedSet(customerHandDao.getAll(salesrepHandDao));
 
         System.out.println("-------------------------------------");
         System.out.println("Fun with ORM DAO:");
@@ -54,8 +51,23 @@ public class Main {
         // Create the ORM DAOs
         ORMDao<Customer> customerORMDao=new ORMDao<>(Customer.class,"","",linkTable);
         ORMDao<Order> orderORMDao=new ORMDao<>(Order.class,"","",linkTable);
+        ORMDao<Office> officeORMDao=new ORMDao<>(Office.class,"","",linkTable);
+        ORMDao<Product> productORMDao=new ORMDao<>(Product.class,"","",linkTable);
+        // Two copies of Salesrep DAO with different prefixes are needed for self-link
+        ORMDao<Salesrep> salesrepORMDao1=new ORMDao<>(Salesrep.class,"","sr1",linkTable);
+        ORMDao<Salesrep> salesrepORMDao2=new ORMDao<>(Salesrep.class,"","sr2",linkTable);
 
         EWriter.printSortedSet(customerORMDao.getAll(orderORMDao));
+        System.out.println("-------------------------------------");
+        EWriter.printSortedSet(customerORMDao.getAll(salesrepORMDao1));
+        System.out.println("-------------------------------------");
+        EWriter.printSortedSet(salesrepORMDao1.getAll(salesrepORMDao2));
+
+        EWriter.printSortedSet(productORMDao.getAll(orderORMDao));
+        System.out.println("-------------------------------------");
+        EWriter.printSortedSet(officeORMDao.getAll(salesrepORMDao1));
+
+
     }
 
 }

@@ -91,7 +91,7 @@ public class ORMDao<T extends Entity> extends AbstractDao<T> {
         setters = new HashMap<>();
         columnNames = new HashMap<>();
         for (Field field : properFields) {
-            setters.put(field, findSetter(field));
+            setters.put(field, findGetSetter(field, "set"));
             // Column names are in the uppercase and include prefix
             columnNames.put(field, tablePrefix + field.getName().toUpperCase());
         }
@@ -99,24 +99,24 @@ public class ORMDao<T extends Entity> extends AbstractDao<T> {
 
 
     /**
-     * Find a setter for a given field, e.g. getMyField for myField (ignores case)
+     * Find a setter or getter for a given field, e.g. setMyField for myField (ignores case)
      *
-     * @param field The field
-     * @return The setter
+     * @param field  The field
+     * @param prefix "get" or "set"
+     * @return The setter or getter
      * @throws DaoException If not found
      */
-    private static Method findSetter(Field field) throws DaoException {
+    private static Method findGetSetter(Field field, String prefix) throws DaoException {
 
-        String name = "set" + field.getName(); // The desired method name, ignoring case
+        String name = prefix + field.getName(); // The desired method name, ignoring case
 
         // Iterate over all declared methods of the entity class declaring the field
         for (Method method :
                 field.getDeclaringClass().getDeclaredMethods()) {
 
             // Check if the method name fits, ignoring case
-            if (method.getName().equalsIgnoreCase(name) &&
-                    method.getParameterCount() == 1 &&
-                    method.getParameterTypes()[0] == field.getType()) {
+            // No parameter type checks, use with caution !
+            if (method.getName().equalsIgnoreCase(name)) {
                 return method; // Found the correct setter
             }
         }
@@ -197,9 +197,80 @@ public class ORMDao<T extends Entity> extends AbstractDao<T> {
 
     }
 
+    /**
+     * Add any links to the bean, if any
+     * Creates new beans of the linked class
+     *
+     * @param bean      The bean to work with
+     * @param resultSet SQL results set (current line)
+     * @param slaveSet  The set of linked beans
+     * @param slaveDao  The Dao for the link type object (slave)
+     */
     @Override
-    protected void convertLinks(T bean, ResultSet resultSet, Set<? extends Entity> linkSet, AbstractDao<?> linkedDao) {
+    protected void convertLinks(T bean, ResultSet resultSet, Set<? extends Entity> slaveSet, AbstractDao<?> slaveDao) throws DaoException {
+        // Find the relevant link for the given slaveDao
+        EntityLink link = null;
+        Class slaveClass = slaveDao.getTClass();
 
+        for (EntityLink l : linkSet) {
+            if ((l.getClass_S().equals(slaveClass.getName()) && l.getClass_L().equals(tClassName)) ||
+                    (l.getClass_L().equals(slaveClass.getName()) && l.getClass_S().equals(tClassName))) {
+                link = l;
+                break;
+            }
+        }
+
+        if (link == null) return; // No links==nothing to do
+
+        // Create a slave bean from the results set
+        Entity slaveBean = (Entity) slaveDao.convertResult(resultSet);
+
+        if (slaveBean == null) {
+            return; // It's normal, nothing to do
+        }
+
+        // Add it to set or find an equal one if exists
+        slaveBean = (Entity) addToSet(slaveSet, slaveBean);
+
+        try {
+
+            // Join the S and L beans
+            // We use only ONE in case of  a self-link, this is intended
+            if (link.getClass_S().equals(slaveClass.getName())) {
+                // S = slave, L= master
+                joinBeans(link, slaveBean, bean);
+            } else if (link.getClass_L().equals(slaveClass.getName())) {
+                // L = slave, S= master
+                joinBeans(link, bean, slaveBean);
+            }
+
+
+        } catch (Exception e) {
+            throw new DaoException("Exception in ORMDao.convertlinks ", e);
+        }
+    }
+
+    /**
+     * Join to beans with the one-to many link using reflections
+     *
+     * @param link  The EntityLink object
+     * @param beanS The bean with the Set<> field
+     * @param beanL The bean with the link field
+     * @throws DaoException
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     * @throws InvocationTargetException
+     */
+    private static void joinBeans(EntityLink link, Entity beanS, Entity beanL) throws DaoException, NoSuchFieldException, IllegalAccessException, InvocationTargetException {
+        // Now add the link to beanL
+        Method methodL = findGetSetter(beanL.getClass().getDeclaredField(link.getField_L()), "set"); // Setter
+        methodL.invoke(beanL, beanS); // Link beanL to beanS : simple link
+
+        // Now add the link to beanS
+        Method methodS = findGetSetter(beanS.getClass().getDeclaredField(link.getField_S()), "get"); // Getter
+        // Raw types are hard to avoid when using reflections
+        Set beanSet = (Set) methodS.invoke(beanS); // Get the set with getter
+        beanSet.add(beanL); // Link beanS to beanL via Set
     }
 
     /**
@@ -220,7 +291,8 @@ public class ORMDao<T extends Entity> extends AbstractDao<T> {
         // Find the link corresponding to masterClass
         EntityLink link = null;
         for (EntityLink l : linkSet) {
-            if (l.getClass_S().equals(masterClass.getName()) || l.getClass_L().equals(masterClass.getName())) {
+            if ((l.getClass_S().equals(masterClass.getName()) && (l.getClass_L().equals(tClassName))) ||
+                    (l.getClass_L().equals(masterClass.getName()) && (l.getClass_S().equals(tClassName)))) {
                 link = l;
                 break;
             }
@@ -232,7 +304,7 @@ public class ORMDao<T extends Entity> extends AbstractDao<T> {
             // Iterate over all joined columns of the link
             for (int i = 0; i < link.getColumns_S().size(); i++) {
                 // Add  ON or AND
-                builder.append(i == 0 ? "ON " : "AND ");
+                builder.append(i == 0 ? " ON " : " AND ");
 
                 // Master and lave column names
                 String masterCol, slaveCol;
@@ -240,14 +312,15 @@ public class ORMDao<T extends Entity> extends AbstractDao<T> {
                 // Find master ans lave column names
                 // Note that self-link (masterClass==tClass) would be processed only once
                 // This is the intended behavior
-                if (link.getClass_S().equals(masterClass.getName())) {
-                    // S==master, L==slave
-                    masterCol = link.getColumns_S().get(i);
-                    slaveCol = link.getColumns_L().get(i);
-                } else {
+                // The order is important for the self-link because of left join
+                if (link.getClass_L().equals(masterClass.getName())) {
                     // L==master, S==slave
                     masterCol = link.getColumns_L().get(i);
                     slaveCol = link.getColumns_S().get(i);
+                } else {
+                    // S==master, L==slave
+                    masterCol = link.getColumns_S().get(i);
+                    slaveCol = link.getColumns_L().get(i);
                 }
 
                 // The join equality

@@ -30,6 +30,24 @@ public final class Salesrep extends Entity implements Comparable<Salesrep> {
     private Set<Order> orders = new HashSet<>();
     private Set<Salesrep> managerTo = new HashSet<>();
 
+    /**
+     * Short description of an object with no recursions
+     *
+     * @return
+     */
+    @Override
+    public String toShortString() {
+        return "{"  + empl_num +
+                ", " + name +
+                ", " + age +
+                ", " + title +
+                ", " + hire_date +
+                ", " + quota +
+                ", " + sales +
+                '}';
+    }
+
+
     //-----------------------------------------------------------------
     // equals() and hashCode() include proper fields only
 
